@@ -2,10 +2,10 @@ name: CD - Netlify
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, feat/integrate-ci-cd ]
   workflow_run:
     workflows: ["CI"]
-    branches: [main]
+    branches: [main, feat/integrate-ci-cd]
     types:
       - completed
 
