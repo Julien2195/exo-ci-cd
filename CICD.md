@@ -11,24 +11,25 @@ Le workflow CI (`ci.yml`) s'exécute à chaque push sur la branche `main` et pou
 - Installation des dépendances
 - Vérification du code avec ESLint
 - Exécution des tests unitaires avec génération de rapports de couverture
-- Publication des rapports de couverture sur Codecov
+- Publication des rapports de couverture sur Codecov (optionnel, si `CODECOV_TOKEN` est configuré)
 
 ### CD (Déploiement Continu)
 
-Le workflow CD (`cd.yml`) s'exécute après le succès du workflow CI et effectue :
+Le workflow CD (`cd_netlify.yml`) s'exécute après le succès du workflow CI et effectue :
 
 - Construction de l'application
-- Déploiement sur GitHub Pages
+- Déploiement sur Netlify
 
-Des configurations alternatives pour Vercel et Netlify sont disponibles en commentaires dans le fichier.
+Pour que le déploiement fonctionne, vous devez configurer les secrets suivants dans les paramètres de votre dépôt GitHub :
+- `NETLIFY_AUTH_TOKEN` : Votre token d'authentification Netlify
+- `NETLIFY_SITE_ID` : L'ID de votre site Netlify
 
 ### Docker
 
-Le workflow Docker (`docker.yml`) construit et publie l'image Docker de l'application :
+Le workflow Docker (`docker.yml`) construit l'image Docker de l'application :
 
 - Construction de l'image à chaque push sur `main`
-- Publication de l'image sur GitHub Container Registry (ghcr.io)
-- Versionnement automatique des images basé sur les tags Git
+- Le push vers un registre est désactivé par défaut (nécessite des tokens)
 
 ## Docker
 
@@ -52,15 +53,31 @@ docker-compose up
 
 L'application sera accessible à l'adresse http://localhost:8080
 
-## Configuration requise
+## Configuration des secrets Netlify
 
-Pour que la CI/CD fonctionne correctement, vous devez configurer les secrets suivants dans votre dépôt GitHub :
+Pour configurer le déploiement sur Netlify, suivez ces étapes :
 
-- `CODECOV_TOKEN`: Token d'accès pour Codecov (pour les rapports de couverture)
+1. Créez un compte sur [Netlify](https://www.netlify.com/) si vous n'en avez pas déjà un.
 
-Pour les déploiements alternatifs :
-- Pour Vercel : `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`
-- Pour Netlify : `NETLIFY_AUTH_TOKEN`, `NETLIFY_SITE_ID`
+2. Créez un nouveau site en important votre dépôt GitHub ou en glissant-déposant votre dossier `dist`.
+
+3. Une fois le site créé, récupérez l'ID du site :
+   - Allez dans les paramètres du site (Site settings)
+   - L'ID du site se trouve dans la section "Site information"
+
+4. Créez un token d'accès personnel :
+   - Allez dans votre compte utilisateur (User settings)
+   - Sélectionnez "Applications"
+   - Créez un nouveau token d'accès personnel
+
+5. Ajoutez ces secrets dans votre dépôt GitHub :
+   - Allez dans les paramètres de votre dépôt GitHub
+   - Sélectionnez "Secrets and variables" > "Actions"
+   - Ajoutez deux nouveaux secrets :
+     - `NETLIFY_AUTH_TOKEN` : Votre token d'accès personnel
+     - `NETLIFY_SITE_ID` : L'ID de votre site
+
+Une fois ces secrets configurés, le workflow CD déploiera automatiquement votre application sur Netlify à chaque push sur la branche `main`.
 
 ## Bonnes pratiques
 
