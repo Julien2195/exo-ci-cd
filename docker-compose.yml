@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    # Volumes pour le développement (décommenter pour le mode dev)
+    # volumes:
+    #   - ./src:/app/src
+    #   - ./public:/app/public
+
+  # Vous pouvez ajouter d'autres services si nécessaire
+  # Par exemple, un service de base de données, un backend API, etc.
+  
+  # api:
+  #   image: node:20-alpine
+  #   volumes:
+  #     - ./api:/app
+  #   working_dir: /app
+  #   command: npm start
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     - NODE_ENV=development 
